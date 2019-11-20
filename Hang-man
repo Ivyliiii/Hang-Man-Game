@@ -1,0 +1,338 @@
+# Hang-Man Guess Word Game
+# Uses Turtle
+import random
+import turtle
+import time
+import random
+import turtle
+
+guess = ""
+word_list = ['abate', 'benevolent', 'candid', 'decree', 'eloquent', 'facilitate', \
+             'galvanizing', 'hostile', 'ignominious', 'lament', 'malicious', \
+             'obsolete', 'paramount', 'qualitative', 'ramify', 'savvy', 'tactful', \
+             'ubiquitous', 'validate', 'warrant', 'yield']
+secretWord = random.choice(word_list)
+print(f"The secret word is {secretWord}")
+
+sHeight = 800
+sWidth = 1600
+
+# screen set ups
+turtle.colormode(255)
+screen = turtle.getscreen()
+screen.setup(sWidth, sHeight)
+screen.bgcolor(122, 52, 235)
+
+# set up turtle
+t = turtle.getturtle()
+
+t.shape("turtle")
+t.color(239, 242, 187)
+t.width(5)
+t.speed(0)
+t.penup()
+
+# We made the second turtle
+topScreenturtle = turtle.Turtle()
+topScreenturtle.shape("turtle")
+topScreenturtle.color(255, 255, 255)
+topScreenturtle.penup()
+topScreenturtle.speed(0)
+topScreenturtle.goto(-1 * int(sWidth / 2) + int(sWidth * 0.1), -1 * int(sHeight * 0.4))
+topScreenturtle.setheading(0)
+
+# Bottom Screen Turtle Drawing
+bottomScreenturtle = turtle.Turtle()
+bottomScreenturtle.shape("turtle")
+bottomScreenturtle.penup()
+bottomScreenturtle.color(255, 255, 255)
+bottomScreenturtle.speed(0)
+bottomScreenturtle.goto(-1 * int(sWidth / 2) + int(sWidth * 0.15), -1 * int(sHeight / 2) + int(sHeight * 0.25))
+bottomScreenturtle.setheading(0)
+
+topScreenturtle.hideturtle()
+t.hideturtle()
+
+
+def drawGallows():
+    # making turtle move to the starting point
+    t.forward(int(sWidth * 0.125))
+    t.right(90)
+    t.forward(int(sHeight * 0.25))
+    t.left(90)
+    # start drawing the main thing
+    t.pendown()
+    t.forward(int(sWidth * 0.25))
+    t.backward(int(sWidth * 0.125))
+    t.left(90)
+    t.forward(int(sHeight * 0.6))
+    t.left(90)
+    t.forward(int(sWidth * 0.125))
+    t.left(90)
+    t.forward(int(sHeight * 0.125))
+
+
+def drawHead():
+    t.right(90)
+    t.circle(sHeight / 20)
+
+
+def drawBody():
+    t.left(90)
+    t.penup()
+    t.forward(sHeight / 10)
+
+
+def body_1():
+    t.pendown()
+    t.forward(sHeight / 20)
+
+
+def drawLarm():
+    t.right(135)
+    t.forward(sHeight / 20)
+
+
+def drawRarm():
+    t.backward(sHeight / 20)
+    t.left(135)
+    t.left(135)
+    t.forward(sHeight / 20)
+
+
+def body_2():
+    t.backward(sHeight / 20)
+    t.right(135)
+    t.forward(sHeight / 15)
+
+
+def Lleg():
+    t.right(35)
+    t.forward(sHeight / 15)
+
+
+def drawfoot():
+    t.setheading(180)
+    t.circle(sWidth / 120, 90)
+    t.circle(sHeight / 110, 90)
+    t.circle(sWidth / 120, 90)
+    t.circle(sHeight / 110, 90)
+
+
+def Rleg():
+    t.setheading(235)
+    t.backward(sHeight / 15)
+    t.left(35)
+    t.left(35)
+    t.forward(sHeight / 15)
+
+
+def drawfoot2():
+    t.setheading(265)
+    t.circle(sWidth / 110, 90)
+    t.circle(sHeight / 120, 90)
+    t.circle(sWidth / 110, 90)
+    t.circle(sHeight / 120, 90)
+
+
+eyeStart = (0, 0)
+
+
+def Draweyes():
+    global eyeStart
+    t.setheading(305)
+    t.backward(sHeight / 15)
+    t.right(35)
+    t.penup()
+    t.backward(sHeight / 6.4)
+    t.right(155)
+    eyeStart = t.pos()
+    t.forward(sHeight / 30)
+    t.pendown()
+    t.circle(sWidth / 650)
+
+
+def draweye2():
+    t.penup()
+    t.goto(eyeStart)
+    t.setheading(270)
+    t.left(155)
+    t.forward(sWidth / 63)
+    t.pendown()
+    t.circle(sWidth / 650)
+
+
+def drawM():
+    t.penup()
+    t.backward(sHeight / 30)
+    t.left(115)
+    t.pendown()
+    t.forward(sWidth / 76)
+    t.backward(sWidth / 38)
+
+
+wrongguesses = 0
+
+MAX_GUESSES = 13
+screenWord = ""  # now it is global
+
+
+def update_drawing():
+    if wrongguesses == 0:
+        drawGallows()
+    if wrongguesses == 1:
+        drawHead()
+    if wrongguesses == 2:
+        drawBody()
+    if wrongguesses == 3:
+        body_1()
+    if wrongguesses == 4:
+        drawLarm()
+    if wrongguesses == 5:
+        drawRarm()
+    if wrongguesses == 6:
+        body_2()
+    if wrongguesses == 7:
+        Lleg()
+    if wrongguesses == 8:
+        drawfoot()
+    if wrongguesses == 9:
+        Rleg()
+    if wrongguesses == 10:
+        drawfoot2()
+    if wrongguesses == 11:
+        Draweyes()
+    if wrongguesses == 12:
+        draweye2()
+    if wrongguesses == 13:
+        drawM()
+
+
+wrongletters = []
+correctletters = []
+# wrongguesses = len(wrongletters)
+
+update_drawing()
+
+
+def drawWord():
+    global screenWord
+    # currentLoc = t.position()
+    # currentHead = t.heading()
+    bottomScreenturtle.clear()
+    bottomScreenturtle.penup()
+    bottomScreenturtle.goto(-1 * int(sWidth / 2) + int(sWidth * 0.15), -1 * int(sHeight / 2) + int(sHeight * 0.25))
+    bottomScreenturtle.hideturtle()
+    bottomScreenturtle.setheading(0)
+    screenWord = ""
+    for letter in secretWord:
+        if letter in correctletters:
+            screenWord += letter + " "
+        else:
+            screenWord += "_" + " "
+    bottomScreenturtle.write(screenWord, move=False, align="left", font=("Times New Roman", 86, "normal"))
+    bottomScreenturtle.hideturtle()
+
+
+def drawWrongletter():
+    topScreenturtle.clear()
+    letterString = "Wrong Letter: "
+    for l in wrongletters:
+        letterString = letterString + l + ", "
+        letterString = letterString[: len(letterString) - 1]
+    topScreenturtle.write(letterString, move=False, align="left", font=("Times New Roman", 40, "normal"))
+
+
+def getGuess():
+    badLetterString = ""
+    for letter in wrongletters:
+        badLetterString += letter + ", "
+
+    boxTitle = "Letters Used:" + badLetterString
+
+    theGuess = screen.textinput(boxTitle, "Enter a letter or type $$ to guess the word")
+    return theGuess
+
+
+def writeErrorMessage(msg):
+    topScreenturtle.clear()
+    topScreenturtle.write(msg, move=False, align="left", font=("Times New Roman", 56, "normal"))
+    time.sleep(2)
+    topScreenturtle.clear()
+
+
+def printWinOrLose(win):
+    global screenWord
+    if win:
+        screenWord = secretWord
+        drawWord()
+        topScreenturtle.clear()
+        topScreenturtle.write("You Win!!!", move=False, align="left", font=("Times New Roman", 86, "normal"))
+    else:
+        topScreenturtle.clear()
+        topScreenturtle.write("I'm Sorry, Game Over...", move=False, align="left",
+                              font=("Times New Roman", 86, "normal"))
+
+
+def getWordGuess():
+    playerWordGuess = screen.textinput("Guess It", "Enter you guess of the word? ")
+    if playerWordGuess.lower() == secretWord:
+        # print("Win")
+        printWinOrLose(True)
+        return True
+    else:
+        # celebrate their failure!!!
+        # print("Lose")
+        printWinOrLose(False)
+        time.sleep(2)
+        writeErrorMessage("THE SECRET WORD IS: " + secretWord.title())
+        return False
+
+
+gameon = True
+
+while gameon:
+
+    # get a guess
+    # check the guess
+    # if guess is letter, check the letter
+    # tell them right or wrong
+    # if it is wrong, draw the next body part
+    # if you run out of chances, stop the game
+    # if they guess the right word, game over
+    drawWord()
+    guess = getGuess()
+
+    if guess == "$$":
+        gameon = getWordGuess()
+    elif len(guess) != 1:
+        writeErrorMessage("I need a single letter. Guess Again")
+    elif guess.lower() not in "abcdefghijklmnopqrstuvwxyz":
+        writeErrorMessage("I need a letter not a character. Guess Again")
+
+    elif guess.lower() in wrongletters:
+        writeErrorMessage("You already guesses this letter. Guess Again")
+        drawWrongletter()
+    elif guess.lower() in correctletters:
+        writeErrorMessage(guess + "is in the word. Guess again")
+        drawWrongletter()
+    else:
+        if guess.lower() in secretWord.lower():
+            correctletters.append(guess.lower())
+            drawWord()
+        else:
+            wrongletters.append(guess.lower())
+            wrongguesses += 1
+            update_drawing()
+            drawWrongletter()
+        if (wrongguesses >= MAX_GUESSES):
+            writeErrorMessage("You are out of guesses. Game Over.")
+            bottomScreenturtle.clear()
+            topScreenturtle.clear()
+            t.clear()
+            writeErrorMessage("THE SECRET WORD IS: " + secretWord.title())
+            gameon = False
+        if "_" not in screenWord:
+            writeErrorMessage("Excellent!!! YOU WIN!!!")
+
+turtle.mainloop()
